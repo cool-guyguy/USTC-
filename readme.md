@@ -24,7 +24,7 @@ pip install requests
 
 ## 配置说明
 
-本脚本共需配置两个参数cookies以及student_id
+本脚本共需配置三个参数cookies以及student_id和lesson_code
 
 在使用前，请修改`config.py`文件中的以下配置项：
 
@@ -44,6 +44,7 @@ pip install requests
 
 ![image-20250714161646617](https://s2.loli.net/2025/07/14/u4wCSeZtMGyr7ap.png)
 
+'lesson_code'即为你要抢的课的课程号
 ```python
 CONFIG = {
     'cookies': {
