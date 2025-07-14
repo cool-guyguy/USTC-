@@ -6,16 +6,16 @@ from typing import List, Dict, Optional
 # 配置参数
 CONFIG = {
     'cookies': {
-        'sduuid': 'b851401dd049b80828f13c999fec9109',
-        'SESSION': 'd32c9757-fcf0-4341-b2ed-41cabe5d41bc',
-        'fine_auth_token': 'eyJhbGci...',
-        'fine_remember_login': '-1',
-        'SVRNAME': 'teacher1'
+        'sduuid': 'xxxxxxxxxx',
+        'SESSION': 'xxxxxxxxxx',
+        'fine_auth_token': 'xxxxxxxxx',
+        'fine_remember_login': 'xxxxxxxxx',
+        'SVRNAME': 'xxxxxxxxx'
     },
-    'student_id': 498393,
+    'student_id': xxxxxx,
     'lesson_code': "001108.01",
-    'start_time': "2025-7-14 15:43:00",  # 定时启动时间，格式为"YYYY-MM-DD HH:MM:SS"
-    'retry_interval': 0.5,  # 重试间隔(秒)
+    'start_time': "2025-7-14 15:46:00",  # 定时启动时间，格式为"YYYY-MM-DD HH:MM:SS"
+    'retry_interval': 0.1,  # 重试间隔(秒)
     'max_retries': 1000  # 最大重试次数
 }
 
