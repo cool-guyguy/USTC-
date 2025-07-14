@@ -3,11 +3,60 @@ from typing import List, Dict
 
 import requests
 
+"""
+ 以下参数需手动设置
+ - cookies:登录后的cookies
+ - lesson_code: 课堂号
+ - student_id: 学生id
+ 返回:
+ - 响应对象
+ """
 # 从环境变量读取配置（或直接赋值）
 cookies = os.getenv('COOKIE', 'your_cookie_here')  # 从环境变量读取，或直接赋值
 lesson_code = "001108.01"  #课堂号
 student_id= 498393  # 学生ID
-turn_id = 1143  # 选课轮次ID
+
+turn_id = None  # 选课轮次ID,无需填写会自动配置
+#获取turn_id
+def get_turn_id(session, student_id, cookies, headers=None):
+
+    url = "https://jw.ustc.edu.cn/ws/for-std/course-select/open-turns"
+    # 默认请求头
+    default_headers = {
+        'authority': 'jw.ustc.edu.cn',
+        'accept': '*/*',
+        'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,nl;q=0.5',
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'origin': 'https://jw.ustc.edu.cn',
+        'referer': f'https://jw.ustc.edu.cn/for-std/course-select/turns/498393/{student_id}',
+        'sec-ch-ua': '"Not)A;Brand";v="8", "Chromium";v="138", "Microsoft Edge";v="138"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-origin',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0',
+        'x-requested-with': 'XMLHttpRequest'
+    }
+    # 更新自定义请求头
+    if headers:
+        default_headers.update(headers)
+    # 请求数据
+    data = {
+        'bizTypeId': str(3),
+        'studentId': str(student_id)
+    }
+    # 发送POST请求
+    response = session.post(
+        url,
+        headers=default_headers,
+        cookies=cookies,
+        data=data
+    )
+    turnid = response.json()[0]['id']
+    print("本次选课为：",response.json()[0]["name"])
+    return turnid
+
 #获取可选课程列表
 def get_addable_lessons(session, student_id, turn_id, cookies, headers=None):
     """
@@ -198,7 +247,7 @@ if __name__ == "__main__":
 
     # 2. 设置学生ID和轮次ID
     student_id = "498393"
-    turn_id = "1143"
+    turn_id=get_turn_id(session,student_id,cookies)
 
     # 3. 获取可选课程列表
     lessons_response = get_addable_lessons(session, student_id, turn_id, cookies)
