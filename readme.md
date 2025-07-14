@@ -35,6 +35,7 @@ pip install requests
 2、按下F12并点击网络
 3、任意点击一个请求（如std-count）然后点击标头
 4、请求头中有个Cookie将对应内容复制到config的cookies中
+#注意每个人cookies字段里面的参数可以都不一样，比如可能没有session，没有的字段就删掉就行
 ```
 
 ![image-20250714161348338](https://s2.loli.net/2025/07/14/mOjvprdkLUZ6CnI.png)

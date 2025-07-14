@@ -9,9 +9,9 @@ CONFIG = {
         'sduuid': 'xxxxxxxxxx',
         'SESSION': 'xxxxxxxxxx',
         'fine_auth_token': 'xxxxxxxxx',
-        'fine_remember_login': 'xxxxxxxxx',
+        'fine_remember_login': 'xxxxxx',
         'SVRNAME': 'xxxxxxxxx'
-    },
+    },#注意每个人cookies字段里面的参数可以都不一样，比如可能没有session，没有的字段就删掉就行
     'student_id': xxxxxx,
     'lesson_code': "001108.01",
     'start_time': "2025-7-14 15:46:00",  # 定时启动时间，格式为"YYYY-MM-DD HH:MM:SS"
