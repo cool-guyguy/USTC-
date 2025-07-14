@@ -28,7 +28,7 @@ pip install requests
 
 在使用前，请修改`config.py`文件中的以下配置项：
 
-其中cookies可直接复制  方法如下
+其中cookies可直接复制  方法一如下
 
 ```
 1、进入选课界面
@@ -63,12 +63,13 @@ CONFIG = {
 ```
 
 ### 如何获取Cookies
-
+获取cookies的方法二
 1. 登录[教务处系统](https://jw.ustc.edu.cn/)
 2. 按F12打开开发者工具
 3. 进入"Application" -> "Cookies"
 4. 复制对应的cookie值
-
+如下图所示
+![image-20250715034644569](https://s2.loli.net/2025/07/15/UYowGLQM9mHNr6z.png)
 ## 使用说明
 
 1. 配置好`config.py`文件
