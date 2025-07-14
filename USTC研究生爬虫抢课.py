@@ -1,17 +1,22 @@
 import requests
-from typing import List, Dict
+import time
+from datetime import datetime
+from typing import List, Dict, Optional
 
 # 配置参数
 CONFIG = {
     'cookies': {
         'sduuid': 'b851401dd049b80828f13c999fec9109',
         'SESSION': 'd32c9757-fcf0-4341-b2ed-41cabe5d41bc',
-        'fine_auth_token': 'eyJhbGci...',  # 简化的token
+        'fine_auth_token': 'eyJhbGci...',
         'fine_remember_login': '-1',
         'SVRNAME': 'teacher1'
     },
     'student_id': 498393,
-    'lesson_code': "001108.01"
+    'lesson_code': "001108.01",
+    'start_time': "2025-7-14 15:43:00",  # 定时启动时间，格式为"YYYY-MM-DD HH:MM:SS"
+    'retry_interval': 0.5,  # 重试间隔(秒)
+    'max_retries': 1000  # 最大重试次数
 }
 
 BASE_HEADERS = {
@@ -30,6 +35,8 @@ class CourseSelector:
         self.session = requests.Session()
         self.student_id = CONFIG['student_id']
         self.cookies = CONFIG['cookies']
+        self.lesson_code = CONFIG['lesson_code']
+        self.start_time = datetime.strptime(CONFIG['start_time'], "%Y-%m-%d %H:%M:%S")
 
     def _make_request(self, url, data, extra_headers=None):
         headers = BASE_HEADERS.copy()
@@ -82,41 +89,70 @@ class CourseSelector:
                 }
         return None
 
+    def wait_until_start(self):
+        """等待到设定的启动时间"""
+        now = datetime.now()
+        if now < self.start_time:
+            wait_seconds = (self.start_time - now).total_seconds()
+            print(f"等待到启动时间: {self.start_time} (还剩{wait_seconds:.1f}秒)")
+            time.sleep(wait_seconds)
+
     def run(self):
         try:
-            # 获取选课轮次和课程列表
+            self.wait_until_start()
+
             turn_id = self.get_turn_id()
-            lessons = self.get_lessons(turn_id)
+            retry_count = 0
 
-            # 查找目标课程
-            target = self.find_lesson(lessons, CONFIG['lesson_code'])
-            if not target:
-                print(f"错误: 未找到课程 {CONFIG['lesson_code']}")
-                return
+            while retry_count < CONFIG['max_retries']:
+                retry_count += 1
+                print(f"\n尝试第 {retry_count} 次抢课...")
 
-            print(f"准备选择课程: {target['name']} (ID: {target['id']})")
+                try:
+                    lessons = self.get_lessons(turn_id)
+                    target = self.find_lesson(lessons, self.lesson_code)
 
-            # 提交选课请求
-            submit_res = self.submit_request(target['id'], turn_id, target['schedule_id'])
-            if submit_res.status_code != 200:
-                print("选课请求失败!")
-                return
+                    if not target:
+                        print(f"未找到课程 {self.lesson_code}, 等待重试...")
+                        time.sleep(CONFIG['retry_interval'])
+                        continue
 
-            # 检查选课结果
-            request_id = submit_res.text.strip('"')
-            status = self.check_status(request_id)
+                    print(f"找到课程: {target['name']} (ID: {target['id']})")
 
-            if status['success']:
-                print("选课成功!")
-            else:
-                print(f"选课失败: {status['errorMessage']['textZh']}")
+                    submit_res = self.submit_request(target['id'], turn_id, target['schedule_id'])
+                    if submit_res.status_code != 200:
+                        print("选课请求失败, 等待重试...")
+                        time.sleep(CONFIG['retry_interval'])
+                        continue
+
+                    request_id = submit_res.text.strip('"')
+                    status = self.check_status(request_id)
+
+                    if status['success']:
+                        print("🎉 抢课成功! 🎉")
+                        return True
+                    else:
+                        print(f"选课失败: {status['errorMessage']['textZh']}, 等待重试...")
+
+                except Exception as e:
+                    print(f"请求出错: {e}, 等待重试...")
+
+                time.sleep(CONFIG['retry_interval'])
+
+            print(f"已达到最大重试次数 {CONFIG['max_retries']}, 抢课结束")
+            return False
 
         except Exception as e:
             print(f"程序出错: {e}")
+            return False
         finally:
             self.session.close()
 
 
 if __name__ == "__main__":
+    print("抢课程序启动...")
     selector = CourseSelector()
-    selector.run()
+    if selector.run():
+        print("抢课任务完成!")
+    else:
+        print("抢课任务失败!")
