@@ -6,13 +6,13 @@ from typing import List, Dict, Optional
 # 配置参数
 CONFIG = {
     'cookies': {
-        'sduuid': 'b851401dd049b80828f13c999fec9109',
-        'SESSION': '8a58bd55-1d14-4d09-9d3b-652d38b3d782',
-        'fine_auth_token': 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTQTI1MjE4MjAxIiwidGVuYW50SWQiOiJkZWZhdWx0IiwiaXNzIjoiZmFucnVhbiIsImRlc2NyaXB0aW9uIjoiWzZlMzhdWzUxNzRdWzRlMWFdKFNBMjUyMTgyMDEpIiwiZXhwIjoxNzUyNzc5NDYzLCJpYXQiOjE3NTI3NjE0NjMsImp0aSI6IlpCRDczZCtRcFJjbDRFVnVmZGtGem5qd05PU1J5MmdXL2NFOHRsdHZKaW9kT3ZCeiJ9.uuRjmWRue-Wpxu9MDtL7OfcrCasOjfeqKpAd8kWdBUA',
+        'sduuid': '',
+        'SESSION': '',
+        'fine_auth_token': '',
         'fine_remember_login': '-1',
         'SVRNAME': 'student7'
     },
-    'student_id': 498393,
+    'student_id': 12345,
     'lesson_code': "001108.01",
     'start_time': "2025-7-14 15:46:00",  # 定时启动时间，格式为"YYYY-MM-DD HH:MM:SS"
     'retry_interval': 0.1,  # 重试间隔(秒)
